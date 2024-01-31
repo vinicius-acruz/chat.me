@@ -1,1 +1,0 @@
- /Users/vini/StudioProjects/chat_me/.dart_tool/flutter_build/c2605480069ac964402c8546665c4a6f/native_assets.yaml: 
