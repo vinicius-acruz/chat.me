@@ -2,7 +2,7 @@
 
 # Chat.Me
 
-Chat.Me is an advanced messaging application developed using Flutter and Firebase. Originally created as part of The Complete Flutter Development Bootcamp, by Dr. Angela Yu and App Brewery. This project has been significantly enhanced to showcase a range of features including user registration, authentication, login, and direct messaging capabilities. Leveraging Firebase's robust backend services, Chat.Me offers a seamless and interactive messaging experience.
+Chat.Me is an advanced messaging application developed using Flutter and Firebase . This project features a suite of functionalities including user registration, secure authentication, profile customization and efficient direct messaging, all seamlessly integrated. By harnessing the robustness of Firebase's backend services, Chat.Me delivers a smooth, intuitive, and interactive messaging experience
 
 ## Table of Contents
 
@@ -78,7 +78,7 @@ For any issues related to Flutter or Firebase setup, refer to the official Flutt
 
 ## Contributors
 
-Chat.Me is currently a solo project developed by [Your Name]. Contributions, suggestions, and feedback are welcome.
+Chat.Me was originally created as part of The Complete Flutter Development Bootcamp, by Dr. Angela Yu and App Brewery and was customized by me. Contributions, suggestions, and feedback are welcome.
 
 ## License
 
