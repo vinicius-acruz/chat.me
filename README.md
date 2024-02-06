@@ -30,6 +30,10 @@ After installing, you can run the app on your preferred device or emulator using
 
 ## Features
 
+<p align="center">
+  <img src="images/chat_me_frame.gif" alt="Chat.ME Gif">
+</p>
+
 Chat.Me includes the following features:
 
 - **User Registration and Authentication**: Securely sign-up and log in to the app using Firebase Authentication.
