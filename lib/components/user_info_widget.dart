@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chat_me/components/conver_image_data.dart';
-import 'package:chat_me/components/rounded_button.dart';
-import 'package:chat_me/components/user_image_picker.dart';
-import 'package:chat_me/components/user_images.dart';
 import 'package:flutter/material.dart';
 
 // The UserImage class serves as a model to store and manage user-related image data.

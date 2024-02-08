@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         // Update email if it has changed.
         if (_emailController.text.isNotEmpty &&
             _emailController.text != user.email) {
-          await user.updateEmail(_emailController.text);
+          await user.verifyBeforeUpdateEmail(_emailController.text);
           // Optionally, update the email in Firestore if it's used as a key or reference.
           await _firestore.collection('users').doc(user.email).update({
             'email': _emailController.text,
@@ -196,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: _passwordController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Password',
                       hintText: 'Leave blank to keep the same',
                       suffixIcon: Icon(Icons.edit),

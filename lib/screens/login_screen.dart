@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             showSpinner = false;
                           });
                         } catch (e) {
-                          print(' Error: $e');
+                          //print(' Error: $e');
                           CustomDialog.show(
                             context: getContext(),
                             title: 'Error',
