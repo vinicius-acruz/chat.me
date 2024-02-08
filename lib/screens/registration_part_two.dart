@@ -5,7 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:chat_me/screens/main_screen.dart';
 
+// This widget represents the second part of the registration process.
 class RegistrationPartTwo extends StatefulWidget {
+  // These are the properties of the RegistrationPartTwo widget.
+  // They include user details and functions for updating the UI and navigating between pages.
   final String email;
   final String password;
   final String retypedPassword;
@@ -18,6 +21,7 @@ class RegistrationPartTwo extends StatefulWidget {
       String displayName) updateUserInfo;
   final VoidCallback goToPreviousPage;
 
+  // The constructor for the RegistrationPartTwo widget.
   const RegistrationPartTwo({
     Key? key,
     required this.email,
@@ -32,23 +36,29 @@ class RegistrationPartTwo extends StatefulWidget {
     required this.goToPreviousPage,
   }) : super(key: key);
 
+  // Creates the mutable state for this widget at a given location in the tree.
   @override
   State<RegistrationPartTwo> createState() => _RegistrationPartTwoState();
 }
 
+// This class holds the mutable state for the RegistrationPartTwo widget.
 class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
+  // Firebase authentication and Firestore instances.
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
+  // Variables to hold user details.
   late String email;
   late String password;
   late String retypedPassword;
   late String displayName;
 
+  // Method to get the current context.
   BuildContext getContext() {
     return context;
   }
 
+  // This method is called when this object is inserted into the tree.
   @override
   void initState() {
     super.initState();
@@ -58,7 +68,9 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
     displayName = widget.displayName;
   }
 
+  // This method handles user registration.
   Future<void> registerUser() async {
+    // Check if the passwords match.
     if (password != retypedPassword) {
       CustomDialog.show(
         context: context,
@@ -72,6 +84,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
     }
     widget.toggleSpinner(true);
     try {
+      // Create a new user with the provided email and password.
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
@@ -88,6 +101,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
         'userPickedImage': widget.userPickedImage,
       });
 
+      // Show a success dialog and navigate to the main screen.
       CustomDialog.show(
         context: getContext(),
         title: 'Registration Successful!',
@@ -101,6 +115,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
 
       widget.toggleSpinner(false);
     } catch (e) {
+      // Show an error dialog if registration fails.
       String errorMessage = e.toString();
 
       CustomDialog.show(
@@ -115,6 +130,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
     }
   }
 
+  // This method describes the part of the user interface represented by this widget.
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -122,6 +138,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: MediaQuery.of(context).size.height * 0.20),
+        // Text fields for email and password input.
         Container(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
@@ -173,6 +190,7 @@ class _RegistrationPartTwoState extends State<RegistrationPartTwo> {
           ),
         ),
         const SizedBox(height: 24.0),
+        // Registration button.
         RoundedButton(
           text: 'Register',
           onPressed: () async {

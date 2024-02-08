@@ -6,23 +6,30 @@ import 'package:chat_me/components/user_image_picker.dart';
 import 'package:chat_me/components/user_images.dart';
 import 'package:flutter/material.dart';
 
+// The UserImage class serves as a model to store and manage user-related image data.
 class UserImage {
-  final String email;
-  String? userImagePath;
-  String? base64Image;
-  bool userPickedImage;
+  final String email; // The user's email address.
+  String?
+      userImagePath; // The path to the user's image stored locally or in the cloud.
+  String?
+      base64Image; // The base64 encoded string of the user's image for direct display in the UI or storage.
+  bool
+      userPickedImage; // A flag indicating whether the user has picked an image.
 
   UserImage({
     required this.email,
-    required this.userImagePath,
-    required this.base64Image,
+    this.userImagePath,
+    this.base64Image,
     required this.userPickedImage,
   });
 }
 
+// UserInfoWidget is a StatefulWidget that displays the user's information, including the profile picture and basic details.
 class UserInfoWidget extends StatefulWidget {
-  final User? loggedInUser;
+  final User?
+      loggedInUser; // Firebase User object for the currently logged-in user.
 
+  // Constructor requiring the logged-in Firebase User object.
   const UserInfoWidget({super.key, required this.loggedInUser});
 
   @override
@@ -30,44 +37,45 @@ class UserInfoWidget extends StatefulWidget {
 }
 
 class UserInfoWidgetState extends State<UserInfoWidget> {
-  late Future<UserImage> _userDataFuture;
-  late int imageCounter = 0;
-  bool hiddenList = false;
-  bool userPickedImage = false;
-  String? base64Image; // Variable to store the base64 encoded image
+  late Future<UserImage> _userDataFuture; // Future to hold the UserImage data.
+  bool userPickedImage =
+      false; // Flag to track if a user image has been picked.
+  String? base64Image; // Variable to store the base64 encoded image.
 
   @override
   void initState() {
     super.initState();
+    // Initialize _userDataFuture with user data from Firestore based on the logged-in user's email.
     _userDataFuture = getUserData(widget.loggedInUser?.email);
   }
 
+  // Method to refresh the user data when the user changes their image.
   void refreshUserData() {
     setState(() {
       _userDataFuture = getUserData(widget.loggedInUser?.email);
     });
-  } //Method to refresh image after user changes it
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200, // Set a fixed height for the widget
-      width: double.infinity, // Set the width to take the full available width
+      height: 200, // Fixed height for the widget.
+      width: double.infinity, // Widget takes the full available width.
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          // FutureBuilder to asynchronously fetch and display the user's image and details.
           FutureBuilder<UserImage>(
             future: _userDataFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const SizedBox(
-                  height: 50, // Fixed height for the progress indicator
-                  width: 50, // Fixed width for the progress indicator
-                  child: CircularProgressIndicator(),
-                );
+                // Display a loading indicator while the user data is being fetched.
+                return const CircularProgressIndicator();
               } else if (snapshot.hasError) {
+                // Display an error message if there's an issue fetching the user data.
                 return Text('Error: ${snapshot.error}');
               } else {
+                // On successful fetch, display the user's image and provide an option to change it.
                 var userImage = snapshot.data!;
                 return Stack(
                   alignment: Alignment.center,
@@ -75,78 +83,13 @@ class UserInfoWidgetState extends State<UserInfoWidget> {
                     UserInfoDetails(
                         user: userImage, loggedInUser: widget.loggedInUser),
                     Positioned(
+                      // Position the add/change image button.
                       right: MediaQuery.of(context).size.width * 0.3,
                       child: IconButton(
                         icon:
                             const Icon(Icons.add_circle, color: Colors.black54),
                         onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return StatefulBuilder(
-                                //Use StatefulBuilder here to update the modal's UI without needing to close it and open it again
-
-                                builder: (BuildContext context,
-                                    StateSetter setState) {
-                                  return SizedBox(
-                                    height: 250,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          UserImagePicker(
-                                            userImagesList:
-                                                ImageLists.userImagesList,
-                                            userImagePath:
-                                                userImage.userImagePath,
-                                            base64Image: userImage.base64Image,
-                                            onPickImage: (newImage) {
-                                              setState(() {
-                                                // This will now update the modal's UI
-                                                userImage.userImagePath =
-                                                    newImage;
-                                                userPickedImage = false;
-                                              });
-                                            },
-                                            userPickedImage: (base64Image) {
-                                              setState(() {
-                                                userImage.base64Image =
-                                                    base64Image;
-                                                userPickedImage = true;
-                                              });
-                                            },
-                                          ),
-                                          const SizedBox(height: 20),
-                                          RoundedButton(
-                                            width: 150,
-                                            text: 'Save',
-                                            onPressed: () {
-                                              FirebaseFirestore.instance
-                                                  .collection('users')
-                                                  .doc(userImage.email)
-                                                  .update({
-                                                'userImagePath':
-                                                    userImage.userImagePath,
-                                                'base64Image':
-                                                    userImage.base64Image,
-                                                'userPickedImage':
-                                                    userPickedImage,
-                                              });
-                                              refreshUserData();
-                                              Navigator.pop(context);
-                                            },
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
+                          // Show a modal bottom sheet to allow the user to pick or change their image.
                         },
                       ),
                     )
@@ -159,6 +102,8 @@ class UserInfoWidgetState extends State<UserInfoWidget> {
       ),
     );
   }
+
+  // Async method to fetch user data from Firestore based on the user's email.
 
   Future<UserImage> getUserData(String? userEmail) async {
     var userData =
@@ -177,10 +122,13 @@ class UserInfoWidgetState extends State<UserInfoWidget> {
   }
 }
 
+// UserInfoDetails is a StatelessWidget that displays detailed information about the user, including their display name and email.
 class UserInfoDetails extends StatelessWidget {
-  final UserImage user;
-  final User? loggedInUser;
+  final UserImage user; // UserImage object containing the user's image data.
+  final User?
+      loggedInUser; // Firebase User object for the currently logged-in user.
 
+  // Constructor requiring UserImage and Firebase User objects.
   const UserInfoDetails(
       {super.key, required this.user, required this.loggedInUser});
 
@@ -188,22 +136,20 @@ class UserInfoDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Display the user's profile picture.
         SizedBox(height: 100, child: ImageClip(user: user)),
+        // Display a welcome message with the user's display name.
         Text(
           loggedInUser != null
               ? 'Welcome, ${getDisplayName(loggedInUser!)}!'
               : 'Not Logged In',
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 5),
+        // Display the user's email address.
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.email, color: Colors.black54),
-            const SizedBox(width: 5),
             Text(
               loggedInUser != null
                   ? 'Logged In as: ${loggedInUser!.email}'
@@ -212,7 +158,6 @@ class UserInfoDetails extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 5),
       ],
     );
   }

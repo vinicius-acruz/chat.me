@@ -3,16 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:chat_me/screens/registration_part_one.dart';
 import 'package:chat_me/screens/registration_part_two.dart';
 
+// This widget represents the main registration screen of the chat application.
 class MainRegistrationScreen extends StatefulWidget {
   const MainRegistrationScreen({Key? key}) : super(key: key);
 
   static const String id = 'main_registration_screen';
 
+  // Creates the mutable state for this widget at a given location in the tree.
   @override
   State<MainRegistrationScreen> createState() => _MainRegistrationScreenState();
 }
 
+// This class holds the mutable state for the MainRegistrationScreen widget.
 class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
+  // Declare the variables to hold the user's registration information.
   late String email;
   late String password;
   late String retypedPassword;
@@ -22,8 +26,10 @@ class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
   late bool userPickedImage;
   late bool showSpinner;
 
+  // Declare the PageController to control the PageView.
   late PageController _pageController;
 
+  // Initialize the state of the widget.
   @override
   void initState() {
     super.initState();
@@ -38,6 +44,7 @@ class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
     _pageController = PageController(); // Initialize the PageController
   }
 
+  // Define the methods to navigate between the pages of the PageView.
   void goToNextPage() {
     if (_pageController.hasClients) {
       _pageController.nextPage(
@@ -56,6 +63,7 @@ class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
     }
   }
 
+  // Define the methods to update the user's registration information.
   void updateUserImage(String? path, String? base64, bool pickedImage) {
     setState(() {
       userImagePath = path;
@@ -86,7 +94,7 @@ class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
     });
   }
 
-// Add this function to handle the AppBar's leading IconButton action
+  // Add this function to handle the AppBar's leading IconButton action
   void onLeadingIconPressed() {
     if (_pageController.hasClients) {
       int currentPage = _pageController.page!.round();
@@ -102,12 +110,14 @@ class _MainRegistrationScreenState extends State<MainRegistrationScreen> {
     }
   }
 
+  // Dispose the PageController when the widget is removed from the widget tree.
   @override
   void dispose() {
     _pageController.dispose(); // Dispose the controller
     super.dispose();
   }
 
+  // This method describes the part of the user interface represented by this widget.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

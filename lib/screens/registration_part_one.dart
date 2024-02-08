@@ -1,12 +1,13 @@
-import 'package:chat_me/components/conver_image_data.dart';
-import 'package:chat_me/components/show_alert_dialog.dart';
-import 'package:chat_me/components/user_info_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:chat_me/components/user_image_picker.dart';
 import 'package:chat_me/components/rounded_button.dart';
-import 'package:chat_me/components/user_images.dart';
+import 'package:chat_me/components/user_image_picker.dart';
+import 'package:chat_me/components/show_alert_dialog.dart';
+import 'package:chat_me/components/conver_image_data.dart'; // Assuming this handles conversion of images to data formats
+import 'package:chat_me/components/user_images.dart'; // Assuming this holds user images data
 
+// RegistrationPartOne is the first part of the user registration process.
 class RegistrationPartOne extends StatefulWidget {
+  // Callbacks to update user image, display name, and navigate to the next registration part.
   final Function(String? imagePath, String? base64, bool pickedImage)
       updateUserImage;
   final Function(String displayName) updateDisplayName;
@@ -25,12 +26,13 @@ class RegistrationPartOne extends StatefulWidget {
 
 class _RegistrationPartOneState extends State<RegistrationPartOne> {
   String? userImagePath;
-  String? base64Image; // Variable to store the base64 encoded image
-  bool userPickedImage = false;
-  String displayName = '';
-  ValueNotifier<UserImage?> userImageNotifier = ValueNotifier(null);
+  String? base64Image; // Variable to store the base64 encoded image string.
+  bool userPickedImage =
+      false; // Flag to indicate if a user has picked an image.
+  String displayName = ''; // User input for display name.
 
-  // This method is used to handle image picking
+  // This method handles the selection of a new image by updating the state
+  // and invoking the callback with the new image details.
   void handleImagePicked(
       {String? imagePath, String? base64, required bool pickedImage}) {
     setState(() {
@@ -57,8 +59,8 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
         const SizedBox(height: 8.0),
         Stack(
           children: [
-            // ImageClip component, assuming you have this defined somewhere
-            // If it's a custom widget, replace with the appropriate widget
+            // a widget you have defined that displays the user's chosen image.
+
             ImageClip(
               userImagePath: userImagePath,
               base64Image: base64Image,
@@ -104,10 +106,8 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
                                   ),
                                   const SizedBox(height: 20),
                                   RoundedButton(
-                                    width: 150,
                                     text: 'Ok',
                                     onPressed: () {
-                                      setState(() {});
                                       Navigator.pop(context);
                                     },
                                   ),
@@ -125,14 +125,14 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
           ],
         ),
         const SizedBox(height: 24.0),
-        // TextField for Display Name
+        // TextField for entering the display name.
         Container(
           constraints:
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.8),
           child: TextField(
             textAlign: TextAlign.center,
             onChanged: (value) {
-              displayName = value;
+              displayName = value; // Update display name as the user types.
             },
             textCapitalization: TextCapitalization.words,
             decoration: const InputDecoration(
@@ -141,11 +141,13 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
           ),
         ),
         const SizedBox(height: 24.0),
+        // Button to proceed to the next part of the registration.
         RoundedButton(
           text: 'Next',
           onPressed: () {
-            // Validate if necessary and then navigate to the next page
+            // Check if the user has selected an image and entered a display name.
             if (userImagePath == null && base64Image == null) {
+              // If no image is selected, show a dialog warning the user.
               CustomDialog.show(
                 context: context,
                 title: 'Image Selection',
@@ -157,6 +159,7 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
               return;
             }
             if (displayName.isEmpty) {
+              // If no display name is entered, show a dialog warning the user.
               CustomDialog.show(
                 context: context,
                 title: 'Name',
@@ -167,14 +170,14 @@ class _RegistrationPartOneState extends State<RegistrationPartOne> {
               );
               return;
             }
-
+            // If both an image has been selected and a display name entered,
+            // proceed to the next part of the registration.
             if (displayName.isNotEmpty &&
                 (userImagePath != null || base64Image != null)) {
-              widget.goToNextPage(); // Navigate to RegistrationPartTwo
-              widget.updateDisplayName(
-                  displayName); // Pass the displayName to the parent widget
+              widget.updateDisplayName(displayName);
+              widget.goToNextPage();
             } else {
-              // Show some error if the name is not entered or image is not picked
+              // Handle any other case where the user cannot proceed (not expected to occur).
             }
           },
         ),

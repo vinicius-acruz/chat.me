@@ -1,3 +1,4 @@
+// Importing necessary packages and files
 import 'package:chat_me/components/show_alert_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:chat_me/components/conver_image_data.dart';
@@ -7,38 +8,48 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chat_screen.dart';
 
+// ContactsScreen is a StatefulWidget. This is the widget that user interacts with.
 class ContactsScreen extends StatefulWidget {
+  // Identifier for the screen
   static const String id = 'contacts_screen';
 
+  // Constructor for ContactsScreen
   const ContactsScreen({super.key});
 
+  // Creating the state for this widget
   @override
   State<ContactsScreen> createState() => _ContactsScreenState();
 }
 
+// The state for ContactsScreen
 class _ContactsScreenState extends State<ContactsScreen> {
-  final _firestore = FirebaseFirestore.instance;
+  // Instance of Firestore
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final _auth = FirebaseAuth.instance;
+  // Instance of FirebaseAuth
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
+  // Method to get the context
   BuildContext getContext() {
     return context;
   }
 
+  // Method called when this object is inserted into the tree.
   @override
   void initState() {
     super.initState();
     getCurrentUser();
   }
 
+  // Method to get the current user
   void getCurrentUser() {
     try {
-      final user = _auth.currentUser;
+      final user = auth.currentUser;
       if (user != null) {
         loggedInUser = user;
       }
     } catch (e) {
-      //show custom dialog
+      // Show custom dialog
       CustomDialog.show(
         context: context,
         title: 'Error',
@@ -51,24 +62,29 @@ class _ContactsScreenState extends State<ContactsScreen> {
     }
   }
 
+  // Method to build the widget
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
+      // Stream of data from Firestore
       stream: FirebaseFirestore.instance.collection('users').snapshots(),
       builder: (context, snapshot) {
+        // Show loading indicator while waiting for data
         if (!snapshot.hasData) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
-        final users = snapshot.data!.docs
+        // Map the documents to UserData objects
+        final List<UserData> users = snapshot.data!.docs
             .map((doc) => UserData.fromMap(doc.data() as Map<String, dynamic>))
             .toList();
 
+        // Build a list of tiles for each user
         return ListView.builder(
           itemCount: users.length,
           itemBuilder: (context, index) {
-            final userImage = UserImage(
+            final UserImage userImage = UserImage(
                 email: users[index].email,
                 userImagePath: users[index].userImagePath,
                 base64Image: users[index].base64Image,
@@ -88,13 +104,14 @@ class _ContactsScreenState extends State<ContactsScreen> {
               title: Text(users[index].displayName),
               subtitle: Text(users[index].email),
               onTap: () async {
-                final senderCollection = _firestore
+                // Create a new conversation in Firestore between the logged-in user and the selected user
+                final DocumentReference senderCollection = firestore
                     .collection('users')
                     .doc(loggedInUser.email)
                     .collection('conversations')
                     .doc(users[index].email);
 
-                final receiverCollection = _firestore
+                final DocumentReference receiverCollection = firestore
                     .collection('users')
                     .doc(users[index].email)
                     .collection('conversations')
@@ -111,8 +128,8 @@ class _ContactsScreenState extends State<ContactsScreen> {
                 });
 
                 if (loggedInUser.email != users[index].email) {
-// Fetch logged-in user's data from Firestore
-                  DocumentSnapshot currentUserDoc = await _firestore
+                  // Fetch logged-in user's data from Firestore
+                  DocumentSnapshot currentUserDoc = await firestore
                       .collection('users')
                       .doc(loggedInUser.email)
                       .get();
@@ -130,6 +147,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
                   });
                 }
 
+                // Navigate to the ChatScreen for the conversation
                 Navigator.push(
                   getContext(),
                   MaterialPageRoute(

@@ -1,31 +1,40 @@
 import 'package:chat_me/components/rounded_button.dart';
 import 'package:chat_me/components/show_alert_dialog.dart';
 import 'package:chat_me/constants.dart';
-
 import 'package:chat_me/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart'; // Spinner
 
+// This widget represents the login screen of the chat application.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   static const String id = 'login_screen';
 
+  // Creates the mutable state for this widget at a given location in the tree.
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+// This class holds the mutable state for the LoginScreen widget.
 class _LoginScreenState extends State<LoginScreen> {
+  // Declare the FirebaseAuth instance.
   final _auth = FirebaseAuth.instance;
-  bool showSpinner = false;
+
+  // Declare the variables to hold the user's login information.
   late String email;
   late String password;
 
+  // Declare a boolean to control the display of the spinner.
+  bool showSpinner = false;
+
+  // This method returns the context of the widget.
   BuildContext getContext() {
     return context;
   }
 
+  // This method describes the part of the user interface represented by this widget.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
